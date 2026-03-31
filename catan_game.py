@@ -92,6 +92,7 @@ class CatanGraph:
         self.adj, self.hexes, self.node_positions = build_graph()
         self.built = {i: False for i in range(54)}
         self._build_from_edges()
+        self.harbor = {i: None for i in range(54)}
 
     def _build_from_edges(self):
         for u, v in EDGES:
@@ -249,7 +250,7 @@ def build_graph():
         hexes.append(hex_nodes)
     
     return adj, hexes, node_id
-def generate_ports(node_positions_inv, hexes):
+def generate_ports(graph,hexes):
     ports = {}
     types = list(PORT_TYPES)
     random.shuffle(types)
@@ -263,7 +264,7 @@ def generate_ports(node_positions_inv, hexes):
         nodes = hex_.get_nodes()
         a = nodes[direction]
         b = nodes[(direction + 1) % 6]
-
+        # Assign the ports to nodes in Graph.ports. Dict{node: port_type}.
         # a et b sont déjà des node_id → pas besoin de node_positions_inv ici
         ports[(a, b)] = port_type
 
@@ -294,7 +295,7 @@ def main():
         else:
             hex.number = NUMBERS.pop()
 
-    ports = generate_ports(node_positions,hexes)
+    ports = generate_ports(graph,hexes)
     print(ports)
     init_game(hexes, node_positions,ports)
 if __name__ == "__main__":
